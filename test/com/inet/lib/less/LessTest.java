@@ -93,7 +93,16 @@ public class LessTest {
     public void compile() throws Exception {
         String cssData = new String( Files.readAllBytes( cssFile.toPath() ), StandardCharsets.UTF_8 );
 
-        boolean compress = cssFile.getName().endsWith( ".css_x" ) || lessFile.getParentFile().getName().equals( "compression" );
-        assertEquals( cssData, Less.compile( lessFile, compress ) );
+        CompressionStatus compressionStatus = cssFile.getName().endsWith( "" +
+            ".css_x" ) || lessFile.getParentFile().getName().equals(
+            "compression" ) ? CompressionStatus.COMPRESSED : CompressionStatus.UNCOMPRESSED;
+
+        CompilerOptions options = CompilerOptions
+            .builder()
+            .setCompressionStatus(compressionStatus)
+            .build();
+
+        assertEquals( cssData, LessCompiler.configuredWith( options ).compile
+            ( lessFile));
     }
 }

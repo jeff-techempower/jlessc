@@ -9,16 +9,24 @@ public class ErrorTest {
 
     private void assertLessException( String less, String expectedErrorMessage ) {
         try {
-            Less.compile( null, less, false );
+            this.getDefaultCompiler().compile(less, null);
             fail( "LessException expected" );
         } catch( LessException lex ) {
             String message = lex.getMessage();
             assertEquals( expectedErrorMessage, message.substring( 0, message.indexOf( System.lineSeparator() ) ) );
         }
     }
+
+    private LessCompiler getDefaultCompiler()
+    {
+        CompilerOptions options = CompilerOptions.builder()
+            .setCompressionStatus( CompressionStatus.UNCOMPRESSED ).build();
+        return LessCompiler.configuredWith( options );
+    }
+
     @Test
     public void parenthesisWithComma() {
-        Less.compile( null, ".a { a: (red); }", false );
+        this.getDefaultCompiler().compile( ".a { a: (red); }", null);
         assertLessException( ".a { a: (red,green); }", "Unrecognized input" );
     }
 
@@ -99,7 +107,13 @@ public class ErrorTest {
     @Test
     public void colorConst() {
         for( int i = 0; i < 10000; i++ ) {
-            assertEquals( Integer.toString( i ), ".t{c:#d3d3d3}", Less.compile( null, ".t{c:lightgrey}", true ) );
+            CompilerOptions options = CompilerOptions
+                .builder()
+                .setCompressionStatus( CompressionStatus.COMPRESSED ).build();
+            LessCompiler compiler = LessCompiler.configuredWith( options );
+
+            assertEquals( Integer.toString( i ),".t{c:#d3d3d3}"  ,
+                compiler.compile( ".t{c:lightgrey}", null ));
         }
     }
 }
