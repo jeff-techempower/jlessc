@@ -102,4 +102,16 @@ class LessObject {
     String getFileName() {
         return filename;
     }
+
+    public int getLine() {
+        return this.line;
+    }
+
+    public int getColumn() {
+        return  this.column;
+    }
+
+    public String getFilename() {
+        return this.filename;
+    }
 }

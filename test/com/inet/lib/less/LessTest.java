@@ -93,9 +93,9 @@ public class LessTest {
     public void compile() throws Exception {
         String cssData = new String( Files.readAllBytes( cssFile.toPath() ), StandardCharsets.UTF_8 );
 
-        CompressionStatus compressionStatus = cssFile.getName().endsWith( "" +
+        CompilerOptions.CompressionStatus compressionStatus = cssFile.getName().endsWith( "" +
             ".css_x" ) || lessFile.getParentFile().getName().equals(
-            "compression" ) ? CompressionStatus.COMPRESSED : CompressionStatus.UNCOMPRESSED;
+            "compression" ) ? CompilerOptions.CompressionStatus.COMPRESSED : CompilerOptions.CompressionStatus.UNCOMPRESSED;
 
         CompilerOptions options = CompilerOptions
             .builder()
@@ -103,6 +103,6 @@ public class LessTest {
             .build();
 
         assertEquals( cssData, LessCompiler.configuredWith( options ).compile
-            ( lessFile));
+            ( lessFile).getCompiledCode());
     }
 }

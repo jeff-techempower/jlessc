@@ -27,7 +27,7 @@
 package com.inet.lib.less;
 
 /**
- * An object that can be print as CSS.
+ * An object that can be printed as CSS.
  */
 interface Formattable {
 

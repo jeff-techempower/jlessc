@@ -48,7 +48,7 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
-      <module filepath="$PROJECT_DIR$/jlessc-fork.iml" fileurl="file://$PROJECT_DIR$/jlessc-fork.iml"/>
+      <module filepath="$PROJECT_DIR$/jlessc.iml" fileurl="file://$PROJECT_DIR$/jlessc.iml"/>
     </modules>
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" assert-keyword="true" jdk-15="true" project-jdk-type="JavaSDK" assert-jdk-15="true" project-jdk-name="1.8">

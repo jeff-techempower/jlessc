@@ -1,9 +1,10 @@
 package com.inet.lib.less;
 
+import com.inet.lib.less.debugging.sourcemap.SourceMapGeneratorFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 
@@ -27,43 +28,43 @@ public class LessCompiler {
     }
 
     /**
-     * @param lessData the less you wish to compile.
-     * @param baseUrl  the base url from which to import external less data.
-     * @return css from the compiled Less.
-     */
-    public String compile(String lessData, URL baseUrl) {
-        return performCompilation(lessData, baseUrl);
-    }
-
-    /**
      * @param file the less you wish to compile.
      * @return css from the compiled Less.
      */
-    public String compile(File file) throws IOException {
+    public CompilationResult compile(File file) throws IOException {
+        // todo - don't know if this is correct. Might fail if file is not utf-8.
+        // see if possible to use the compilers' reader.
         String lessData = new String(Files
                 .readAllBytes(file.toPath()), StandardCharsets.UTF_8);
-        return performCompilation(lessData, file.toURI().toURL());
-    }
+        CssFormatter formatter = CssFormatterFactory.getInstance(compilerOptions.getCompressionStatus());
+        SourceMap sourceMap;
+        String css;
 
-    private String performCompilation(String lessData, URL baseUrl) {
         try {
             LessParser parser = new LessParser();
-            parser.parse(baseUrl, new StringReader(lessData),
+            parser.parse(file.toURI().toURL(), new StringReader(lessData),
                     compilerOptions
                             .getReaderFactory());
-
             StringBuilder builder = new StringBuilder();
-            CssFormatter formatter = compilerOptions
-                    .getCompressionStatus() == CompressionStatus.COMPRESSED ? new
-                    CompressCssFormatter() : new
-                    CssFormatter();
+
+            if (compilerOptions.sourceMapsEnabled())
+            {
+                sourceMap = SourceMap.fromGenerator(SourceMapGeneratorFactory.getInstance(compilerOptions.getSourceMapFormat()));
+                formatter.setSourceMap(sourceMap);
+            }
             parser.parseLazy(formatter);
-            formatter.format(parser, baseUrl, builder);
-            return builder.toString();
+            formatter.format(parser, file.toURI().toURL(), builder);
+            css = builder.toString();
         } catch (LessException ex) {
             throw ex;
         } catch (Exception ex) {
             throw new LessException(ex);
         }
+
+        if (compilerOptions.sourceMapsEnabled())
+        {
+           return CompilationResult.withSourceMap(css, formatter.getSourceMap());
+        }
+        return CompilationResult.cssOnly(css);
     }
 }

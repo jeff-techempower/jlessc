@@ -26,6 +26,9 @@
  */
 package com.inet.lib.less;
 
+import com.google.common.collect.ImmutableList;
+import com.inet.lib.less.debugging.sourcemap.SourceMapGeneratorFactory;
+
 import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -40,6 +43,9 @@ import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.xml.transform.Source;
+
+import static com.google.common.base.Preconditions.checkState;
 
 /**
  * A formatter for the CSS output. Hold some formating states.
@@ -137,6 +143,13 @@ class CssFormatter implements Cloneable {
     private boolean                         guardDefault;
 
     private boolean                         wasDefaultFunction;
+
+    private SourceMap                       sourceMap;
+
+    private int                             lineIndex;
+
+    private int                             lineLength;
+
 
     /**
      * Create a initial instance.
@@ -797,8 +810,13 @@ class CssFormatter implements Cloneable {
      * @return a reference to this object
      */
     CssFormatter newline() {
-        output.append( System.lineSeparator() );
+        output.append( getNewLine() );
         return this;
+    }
+
+    private String getNewLine()
+    {
+        return System.lineSeparator();
     }
 
     /**

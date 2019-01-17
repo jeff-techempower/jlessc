@@ -303,7 +303,7 @@ class LessLookAheadReader extends LessObject implements Closeable {
      * The current line number for error messages.
      * @return line number
      */
-    int getLine() {
+    public int getLine() {
         return line;
     }
 
@@ -311,7 +311,7 @@ class LessLookAheadReader extends LessObject implements Closeable {
      * The current column number for error messages.
      * @return column number.
      */
-    int getColumn() {
+    public int getColumn() {
         return column;
     }
 
